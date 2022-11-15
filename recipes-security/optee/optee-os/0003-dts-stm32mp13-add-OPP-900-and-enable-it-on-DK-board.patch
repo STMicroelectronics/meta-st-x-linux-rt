@@ -1,0 +1,90 @@
+From b154e843d257d0fef972c8083fb6fbcedaaf14f7 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Thu, 16 Sep 2021 14:23:00 +0200
+Subject: [PATCH 3/5] dts: stm32mp13: add OPP 900 and enable it on DK board
+
+- Add 900MHz OPP configuration
+- Declare only one OPP 900 in stm32mp13xd.dtsi
+---
+ core/arch/arm/dts/stm32mp135f-dk.dts | 19 ++++++++++++++++---
+ core/arch/arm/dts/stm32mp13xd.dtsi   | 10 ++--------
+ 2 files changed, 18 insertions(+), 11 deletions(-)
+
+diff --git a/core/arch/arm/dts/stm32mp135f-dk.dts b/core/arch/arm/dts/stm32mp135f-dk.dts
+index 4400b2b1..4a6e212b 100644
+--- a/core/arch/arm/dts/stm32mp135f-dk.dts
++++ b/core/arch/arm/dts/stm32mp135f-dk.dts
+@@ -477,6 +477,12 @@
+ 			frac = < 0xAAA >;
+ 		};
+ 
++		pll1_vco_1800Mhz: pll1-vco-1800Mhz {
++			src = < CLK_PLL12_HSE >;
++			divmn = < 1 74 >;
++			frac = < 0 >;
++		};
++
+ 		pll1_vco_1300Mhz: pll1-vco-1300Mhz {
+ 			src = < CLK_PLL12_HSE >;
+ 			divmn = < 2 80 >;
+@@ -506,7 +512,7 @@
+ 		compatible = "st,stm32mp1-pll";
+ 		reg = <0>;
+ 
+-		st,pll = < &pll1_cfg1 >;
++		st,pll = < &pll1_cfg3 >;
+ 
+ 		pll1_cfg1: pll1_cfg1 {
+ 			st,pll_vco = < &pll1_vco_1300Mhz >;
+@@ -517,6 +523,13 @@
+ 			st,pll_vco = < &pll1_vco_2000Mhz >;
+ 			st,pll_div_pqr = < 0 1 1 >;
+ 		};
++
++		/* 900MHz config */
++		pll1_cfg3: pll1_cfg3 {
++			st,pll_vco = < &pll1_vco_1800Mhz >;
++			st,pll_div_pqr = < 0 1 1 >;
++		};
++
+ 	};
+ 
+ 	/* VCO = 1066.0 MHz => P = 266 (AXI), Q = 266, R = 533 (DDR) */
+@@ -562,9 +575,9 @@
+ 		st,ck_mpu {
+ 
+ 			cfg_1 {
+-				hz = < 1000000000 >;
++				hz = < 900000000 >;
+ 				st,clksrc = < CLK_MPU_PLL1P >;
+-				st,pll = < &pll1_cfg2 >;
++				st,pll = < &pll1_cfg3 >;
+ 			};
+ 
+ 			cfg_2 {
+diff --git a/core/arch/arm/dts/stm32mp13xd.dtsi b/core/arch/arm/dts/stm32mp13xd.dtsi
+index fe2b45b2..0520a0e2 100644
+--- a/core/arch/arm/dts/stm32mp13xd.dtsi
++++ b/core/arch/arm/dts/stm32mp13xd.dtsi
+@@ -5,16 +5,10 @@
+  */
+ 
+ &cpu0_opp_table {
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
++		opp-900000000 {
++			opp-hz = /bits/ 64 <900000000>;
+ 			opp-microvolt = <1350000>;
+ 			opp-supported-hw = <0x2>;
+ 			st,opp-default;
+ 		};
+-
+-		opp-650000000 {
+-			opp-hz = /bits/ 64 <650000000>;
+-			opp-microvolt = <1250000>;
+-			opp-supported-hw = <0x2>;
+-		};
+ };
+-- 
+2.34.1
+
