@@ -1,14 +1,14 @@
-From 9fef12fc9d0b00c0b4f6abba79c5a32fae6a215f Mon Sep 17 00:00:00 2001
+From 6defa661f2b0fa5be98cf529b0900ab5ac2ab963 Mon Sep 17 00:00:00 2001
 From: Lionel VITTE <lionel.vitte@st.com>
 Date: Mon, 14 Nov 2022 11:22:54 +0100
-Subject: [PATCH 4/5] dts: stm32mp15: enable OPP 650 on DK board
+Subject: [PATCH 4/4] dts: stm32mp15: enable OPP 650 on DK board
 
 ---
  core/arch/arm/dts/stm32mp15xd.dtsi | 14 ++++----------
  1 file changed, 4 insertions(+), 10 deletions(-)
 
 diff --git a/core/arch/arm/dts/stm32mp15xd.dtsi b/core/arch/arm/dts/stm32mp15xd.dtsi
-index bf4ee957..3df72ec6 100644
+index bf4ee95729..3df72ec640 100644
 --- a/core/arch/arm/dts/stm32mp15xd.dtsi
 +++ b/core/arch/arm/dts/stm32mp15xd.dtsi
 @@ -5,16 +5,10 @@
