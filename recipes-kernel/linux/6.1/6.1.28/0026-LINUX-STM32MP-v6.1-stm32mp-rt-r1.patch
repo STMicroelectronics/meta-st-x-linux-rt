@@ -1,18 +1,33 @@
-From 05ea3c26ccad3359d94dbe3c7ba758c2ba2f7dd9 Mon Sep 17 00:00:00 2001
-From: Lionel VITTE <lionel.vitte@st.com>
-Date: Wed, 8 Feb 2023 09:59:08 +0100
-Subject: [PATCH 28/28] 5.15-stm32mp-rt-49-r1 CONFIG
+From 27af60f3806459b877e85728d42581d70eee52ec Mon Sep 17 00:00:00 2001
+From: Lionel Vitte <lionel.vitte@st.com>
+Date: Tue, 20 Jun 2023 11:13:21 +0200
+Subject: [PATCH 26/26] LINUX-STM32MP: v6.1-stm32mp-rt-r1
 
-Signed-off-by: Lionel VITTE <lionel.vitte@st.com>
+Signed-off-by: Lionel Vitte <lionel.vitte@st.com>
 ---
+ arch/arm/boot/dts/stm32mp131.dtsi             |  1 -
  .../configs/fragment-07-rt-sysvinit.config    | 12 +++++++
  arch/arm/configs/fragment-07-rt.config        | 32 +++++++++++++++++++
  arch/arm/configs/fragment-08-rt-mp13.config   |  2 ++
- 3 files changed, 46 insertions(+)
+ drivers/clk/stm32/clk-stm32mp13.c             |  2 +-
+ drivers/mfd/syscon.c                          |  3 ++
+ 6 files changed, 50 insertions(+), 2 deletions(-)
  create mode 100644 arch/arm/configs/fragment-07-rt-sysvinit.config
  create mode 100644 arch/arm/configs/fragment-07-rt.config
  create mode 100644 arch/arm/configs/fragment-08-rt-mp13.config
 
+diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
+index 0783528d2..3a44424a0 100644
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -894,7 +894,6 @@ exti-interrupt-map {
+ 		syscfg: syscon@50020000 {
+ 			compatible = "st,stm32mp157-syscfg", "syscon";
+ 			reg = <0x50020000 0x400>;
+-			clocks = <&rcc SYSCFG>;
+ 		};
+ 
+ 		lptimer4: timer@50023000 {
 diff --git a/arch/arm/configs/fragment-07-rt-sysvinit.config b/arch/arm/configs/fragment-07-rt-sysvinit.config
 new file mode 100644
 index 000000000..49a4baf60
@@ -77,6 +92,33 @@ index 000000000..c70d7adc6
 @@ -0,0 +1,2 @@
 +# Disable SMP on MP13
 +# CONFIG_SMP is not set
+diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
+index 7a5e83457..af4c0fd47 100644
+--- a/drivers/clk/stm32/clk-stm32mp13.c
++++ b/drivers/clk/stm32/clk-stm32mp13.c
+@@ -910,7 +910,7 @@ static struct clk_stm32_gate spi1 = {
+ 
+ static struct clk_stm32_gate syscfg = {
+ 	.gate_id = GATE_SYSCFG,
+-	.hw.init = CLK_HW_INIT("syscfg", "pclk3", &clk_stm32_gate_ops, 0),
++	.hw.init = CLK_HW_INIT("syscfg", "pclk3", &clk_stm32_gate_ops, CLK_IS_CRITICAL),
+ };
+ 
+ static struct clk_stm32_gate vref = {
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index bdb2ce7ff..81fb76bcb 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -38,6 +38,9 @@ static const struct regmap_config syscon_regmap_config = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
++#ifdef CONFIG_PREEMPT_RT
++	.use_raw_spinlock = true,
++#endif
+ };
+ 
+ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
 -- 
 2.34.1
 
