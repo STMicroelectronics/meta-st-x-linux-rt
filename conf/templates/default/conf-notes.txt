@@ -1,0 +1,6 @@
+Available image for OpenSTLinux layers is:
+
+  - Official OpenSTLinux images:
+      - Supported images:
+          st-image-core         -   OpenSTLinux core image
+
