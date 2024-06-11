@@ -13,6 +13,9 @@
 LOCALCONF_VERSION = "2"
 LAYER_CONF_VERSION ?= "7"
 
+# Set common distrooverrides for RT distro
+DISTROOVERRIDES =. "openstlinuxcommonrt:"
+
 # =========================================================================
 # Set default distro naming
 # =========================================================================
