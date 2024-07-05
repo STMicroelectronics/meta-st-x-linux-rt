@@ -1,0 +1,282 @@
+From 3acd5567eb235df77090173ae9a55892e4adf388 Mon Sep 17 00:00:00 2001
+From: Lionel VITTE <lionel.vitte@st.com>
+Date: Mon, 10 Jun 2024 08:53:56 +0200
+Subject: [PATCH 11/11] v6.1-stm32mp-rt-r2
+
+---
+ arch/arm/boot/dts/stm32mp131.dtsi             |  1 -
+ .../configs/fragment-07-rt-sysvinit.config    | 12 ++++++
+ arch/arm/configs/fragment-07-rt.config        | 37 ++++++++++++++++++
+ arch/arm/configs/fragment-08-rt-mp13.config   |  2 +
+ .../fragment-01-defconfig-cleanup.config      | 12 ++++++
+ .../fragment-02-defconfig-addons.config       | 33 ++++++++++++++++
+ .../configs/fragment-07-rt-sysvinit.config    | 12 ++++++
+ arch/arm64/configs/fragment-07-rt.config      | 38 +++++++++++++++++++
+ drivers/clk/stm32/clk-stm32mp13.c             |  2 +-
+ drivers/clk/stm32/clk-stm32mp25.c             |  6 +--
+ drivers/mfd/syscon.c                          |  3 ++
+ 11 files changed, 153 insertions(+), 5 deletions(-)
+ create mode 100644 arch/arm/configs/fragment-07-rt-sysvinit.config
+ create mode 100644 arch/arm/configs/fragment-07-rt.config
+ create mode 100644 arch/arm/configs/fragment-08-rt-mp13.config
+ create mode 100644 arch/arm64/configs/fragment-07-rt-sysvinit.config
+ create mode 100644 arch/arm64/configs/fragment-07-rt.config
+
+diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
+index 108ac5d6f..70858b121 100644
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -1044,7 +1044,6 @@ exti: interrupt-controller@5000d000 {
+ 		syscfg: syscon@50020000 {
+ 			compatible = "st,stm32mp157-syscfg", "syscon";
+ 			reg = <0x50020000 0x400>;
+-			clocks = <&rcc SYSCFG>;
+ 		};
+ 
+ 		lptimer4: timer@50023000 {
+diff --git a/arch/arm/configs/fragment-07-rt-sysvinit.config b/arch/arm/configs/fragment-07-rt-sysvinit.config
+new file mode 100644
+index 000000000..49a4baf60
+--- /dev/null
++++ b/arch/arm/configs/fragment-07-rt-sysvinit.config
+@@ -0,0 +1,12 @@
++CONFIG_CGROUPS=y
++# CONFIG_CGROUP_SCHED is not set
++# CONFIG_CGROUP_PIDS is not set
++# CONFIG_CGROUP_RDMA is not set
++# CONFIG_CGROUP_FREEZER is not set
++# CONFIG_CGROUP_DEVICE is not set
++# CONFIG_CGROUP_CPUACCT is not set
++# CONFIG_CGROUP_PERF is not set
++# CONFIG_CGROUP_DEBUG is not set
++# CONFIG_CGROUP_NET_PRIO is not set
++# CONFIG_CGROUP_NET_CLASSID is not set
++
+diff --git a/arch/arm/configs/fragment-07-rt.config b/arch/arm/configs/fragment-07-rt.config
+new file mode 100644
+index 000000000..e122f036e
+--- /dev/null
++++ b/arch/arm/configs/fragment-07-rt.config
+@@ -0,0 +1,37 @@
++CONFIG_PREEMPT_RT=y
++
++# disable SCHED_MC
++# CONFIG_MCPM is not set
++
++# Disable CPUFREQ and CPUIDLE
++# CONFIG_CPU_FREQ is not set
++# CONFIG_CPU_IDLE is not set
++
++# Force to have HIGH_RES_TIMERS
++CONFIG_HIGH_RES_TIMERS=y
++
++# force do not go to sleep
++# For multiple core, you should set the specific boot options
++# for isolate the core and render it tickless: "isolcpus=2,3 nohz_full=2,3"
++# Warning: to active only if SMP are present
++# CONFIG_HZ_PERIODIC=y
++
++# to Enable ftrace, you need to enable the following configuraiton:
++# CONFIG_FTRACE=y
++# CONFIG_IRQSOFF_TRACER=y
++# CONFIG_PREEMPT_TRACER=y
++# CONFIG_SCHED_TRACER=y
++# CONFIG_FUNCTION_TRACER=y
++# By default, the ftrace for RT kernel are disabled
++# CONFIG_FTRACE is not set
++# CONFIG_IRQSOFF_TRACER is not set
++# CONFIG_PREEMPT_TRACER is not set
++# CONFIG_SCHED_TRACER is not set
++# CONFIG_FUNCTION_TRACER is not set
++
++# Disable RNG to avoid OPTEE Activation
++# CONFIG_HW_RANDOM_OPTEE is not set
++
++# CONFIG_DRM_DISPLAY_CONNECTOR is not set
++
++
+diff --git a/arch/arm/configs/fragment-08-rt-mp13.config b/arch/arm/configs/fragment-08-rt-mp13.config
+new file mode 100644
+index 000000000..c70d7adc6
+--- /dev/null
++++ b/arch/arm/configs/fragment-08-rt-mp13.config
+@@ -0,0 +1,2 @@
++# Disable SMP on MP13
++# CONFIG_SMP is not set
+diff --git a/arch/arm64/configs/fragment-01-defconfig-cleanup.config b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+index 1a4b31f86..710dfacf0 100644
+--- a/arch/arm64/configs/fragment-01-defconfig-cleanup.config
++++ b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+@@ -48,3 +48,15 @@
+ # CONFIG_MTD_PHYSMAP is not set
+ # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
+ # CONFIG_PAGE_POOL_STATS is not set
++CONFIG_CGROUPS=y
++# CONFIG_CGROUP_SCHED is not set
++# CONFIG_CGROUP_PIDS is not set
++# CONFIG_CGROUP_RDMA is not set
++# CONFIG_CGROUP_FREEZER is not set
++# CONFIG_CGROUP_DEVICE is not set
++# CONFIG_CGROUP_CPUACCT is not set
++# CONFIG_CGROUP_PERF is not set
++# CONFIG_CGROUP_DEBUG is not set
++# CONFIG_CGROUP_NET_PRIO is not set
++# CONFIG_CGROUP_NET_CLASSID is not set
++
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 00d70ac85..79614f626 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -128,3 +128,36 @@ CONFIG_VIDEO_STM32_CSI2HOST=m
+ CONFIG_VIDEO_STM32_DCMI=m
+ CONFIG_VIDEO_STM32_DCMIPP=m
+ CONFIG_VIDEO_VIVID=m
++CONFIG_EXPERT=y
++CONFIG_PREEMPT_RT=y
++
++# disable SCHED_MC
++# CONFIG_MCPM is not set
++
++# Disable CPUFREQ and CPUIDLE
++# CONFIG_CPU_FREQ is not set
++# CONFIG_CPU_IDLE is not set
++
++# Force to have HIGH_RES_TIMERS
++CONFIG_HIGH_RES_TIMERS=y
++
++# force do not go to sleep
++# For multiple core, you should set the specific boot options
++# for isolate the core and render it tickless: "isolcpus=2,3 nohz_full=2,3"
++# Warning: to active only if SMP are present
++# CONFIG_HZ_PERIODIC=y
++
++# to Enable ftrace, you need to enable the following configuraiton:
++# CONFIG_FTRACE=y
++# CONFIG_IRQSOFF_TRACER=y
++# CONFIG_PREEMPT_TRACER=y
++# CONFIG_SCHED_TRACER=y
++# CONFIG_FUNCTION_TRACER=y
++# By default, the ftrace for RT kernel are disabled
++# CONFIG_FTRACE is not set
++# CONFIG_IRQSOFF_TRACER is not set
++# CONFIG_PREEMPT_TRACER is not set
++# CONFIG_SCHED_TRACER is not set
++# CONFIG_FUNCTION_TRACER is not set
++
++
+diff --git a/arch/arm64/configs/fragment-07-rt-sysvinit.config b/arch/arm64/configs/fragment-07-rt-sysvinit.config
+new file mode 100644
+index 000000000..49a4baf60
+--- /dev/null
++++ b/arch/arm64/configs/fragment-07-rt-sysvinit.config
+@@ -0,0 +1,12 @@
++CONFIG_CGROUPS=y
++# CONFIG_CGROUP_SCHED is not set
++# CONFIG_CGROUP_PIDS is not set
++# CONFIG_CGROUP_RDMA is not set
++# CONFIG_CGROUP_FREEZER is not set
++# CONFIG_CGROUP_DEVICE is not set
++# CONFIG_CGROUP_CPUACCT is not set
++# CONFIG_CGROUP_PERF is not set
++# CONFIG_CGROUP_DEBUG is not set
++# CONFIG_CGROUP_NET_PRIO is not set
++# CONFIG_CGROUP_NET_CLASSID is not set
++
+diff --git a/arch/arm64/configs/fragment-07-rt.config b/arch/arm64/configs/fragment-07-rt.config
+new file mode 100644
+index 000000000..43824f727
+--- /dev/null
++++ b/arch/arm64/configs/fragment-07-rt.config
+@@ -0,0 +1,38 @@
++CONFIG_EXPERT=y
++CONFIG_PREEMPT_RT=y
++
++# disable SCHED_MC
++# CONFIG_MCPM is not set
++
++# Disable CPUFREQ and CPUIDLE
++# CONFIG_CPU_FREQ is not set
++# CONFIG_CPU_IDLE is not set
++
++# Force to have HIGH_RES_TIMERS
++CONFIG_HIGH_RES_TIMERS=y
++
++# force do not go to sleep
++# For multiple core, you should set the specific boot options
++# for isolate the core and render it tickless: "isolcpus=2,3 nohz_full=2,3"
++# Warning: to active only if SMP are present
++# CONFIG_HZ_PERIODIC=y
++
++# to Enable ftrace, you need to enable the following configuraiton:
++# CONFIG_FTRACE=y
++# CONFIG_IRQSOFF_TRACER=y
++# CONFIG_PREEMPT_TRACER=y
++# CONFIG_SCHED_TRACER=y
++# CONFIG_FUNCTION_TRACER=y
++# By default, the ftrace for RT kernel are disabled
++# CONFIG_FTRACE is not set
++# CONFIG_IRQSOFF_TRACER is not set
++# CONFIG_PREEMPT_TRACER is not set
++# CONFIG_SCHED_TRACER is not set
++# CONFIG_FUNCTION_TRACER is not set
++#
++# Disable RNG to avoid OPTEE Activation
++# CONFIG_HW_RANDOM_OPTEE is not set
++#
++
++# CONFIG_DRM_DISPLAY_CONNECTOR is not set
++
+diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
+index 7a5e83457..af4c0fd47 100644
+--- a/drivers/clk/stm32/clk-stm32mp13.c
++++ b/drivers/clk/stm32/clk-stm32mp13.c
+@@ -910,7 +910,7 @@ static struct clk_stm32_gate spi1 = {
+ 
+ static struct clk_stm32_gate syscfg = {
+ 	.gate_id = GATE_SYSCFG,
+-	.hw.init = CLK_HW_INIT("syscfg", "pclk3", &clk_stm32_gate_ops, 0),
++	.hw.init = CLK_HW_INIT("syscfg", "pclk3", &clk_stm32_gate_ops, CLK_IS_CRITICAL),
+ };
+ 
+ static struct clk_stm32_gate vref = {
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 72d55012a..79dcfe5a8 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -706,8 +706,8 @@ static CLK_STM32_GATE(ck_icn_p_ethsw_acm_cfg, "ck_icn_ls_mcu", 0, GATE_ETHSWACMC
+ static CLK_STM32_GATE(ck_icn_p_ethsw_acm_msg, "ck_icn_ls_mcu", 0, GATE_ETHSWACMMSG);
+ 
+ /* FDCAN */
+-static CLK_STM32_GATE(ck_icn_p_fdcan, "ck_icn_apb2", 0, GATE_FDCAN);
+-static CLK_STM32_GATE(ck_ker_fdcan, "ck_flexgen_26", 0, GATE_FDCAN);
++static CLK_STM32_GATE(ck_icn_p_fdcan, "ck_icn_apb2", CLK_IS_CRITICAL, GATE_FDCAN);
++static CLK_STM32_GATE(ck_ker_fdcan, "ck_flexgen_26", CLK_IS_CRITICAL, GATE_FDCAN);
+ 
+ /* GPU */
+ static CLK_STM32_GATE(ck_icn_m_gpu, "ck_flexgen_59", 0, GATE_GPU);
+@@ -813,7 +813,7 @@ static CLK_STM32_GATE(ck_ker_sai4, "ck_flexgen_25", CLK_SET_RATE_PARENT, GATE_SA
+ static CLK_STM32_GATE(ck_icn_m_sdmmc1, "ck_icn_sdmmc", 0, GATE_SDMMC1);
+ static CLK_STM32_GATE(ck_icn_m_sdmmc2, "ck_icn_sdmmc", 0, GATE_SDMMC2);
+ static CLK_STM32_GATE(ck_icn_m_sdmmc3, "ck_icn_sdmmc", 0, GATE_SDMMC3);
+-static CLK_STM32_GATE(ck_ker_sdmmc1, "ck_flexgen_51", 0, GATE_SDMMC1);
++static CLK_STM32_GATE(ck_ker_sdmmc1, "ck_flexgen_51", CLK_IS_CRITICAL, GATE_SDMMC1);
+ static CLK_STM32_GATE(ck_ker_sdmmc2, "ck_flexgen_52", 0, GATE_SDMMC2);
+ static CLK_STM32_GATE(ck_ker_sdmmc3, "ck_flexgen_53", 0, GATE_SDMMC3);
+ 
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index 6196724ef..e10cc90c2 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -38,6 +38,9 @@ static const struct regmap_config syscon_regmap_config = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
++#ifdef CONFIG_PREEMPT_RT
++	.use_raw_spinlock = true,
++#endif
+ };
+ 
+ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+-- 
+2.25.1
+
