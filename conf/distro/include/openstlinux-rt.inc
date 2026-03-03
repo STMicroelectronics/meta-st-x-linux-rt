@@ -48,6 +48,8 @@ DISTRO_FEATURES:append = " optee "
 DISTRO_FEATURES:append = " autoresize "
 DISTRO_FEATURES:append = " initrd "
 
+DISTRO_FEATURES:append = " usrmerge "
+
 # Disabling pulseaudio
 DISTRO_FEATURES_BACKFILL_CONSIDERED += "pulseaudio"
 
