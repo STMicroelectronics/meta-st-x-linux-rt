@@ -6,7 +6,6 @@ SRC_URI:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rt', 'file://${LINU
 
 KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rt', '${S}/arch/${ARCH}/configs/fragment-07-rt.config', '', d)}"
 KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rt', '${S}/arch/${ARCH}/configs/fragment-07-rt-sysvinit.config', '', d)}"
-KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rt', '${S}/arch/${ARCH}/configs/fragment-07-rt-sysvinit.config', '', d)}"
 
 KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rt', '${WORKDIR}/fragments/${BPN}/${LINUX_VERSION}/fragment-10-network-improvment.config', '', d)}"
 KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rtperf', '${WORKDIR}/fragments/${BPN}/${LINUX_VERSION}/fragment-12-rt-optimization.config', '', d)}"
