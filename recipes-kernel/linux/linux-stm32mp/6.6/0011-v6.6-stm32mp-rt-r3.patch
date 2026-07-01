@@ -1,7 +1,7 @@
-From f6587496f2c5894abf9bcfbd136a9693d0e97f11 Mon Sep 17 00:00:00 2001
+From 3ead62e763ca45a0bf84f73445ba0fd963dfd5d7 Mon Sep 17 00:00:00 2001
 From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
 Date: Tue, 16 Dec 2025 13:49:21 +0100
-Subject: [PATCH 2/2] v6.6-stm32mp-rt-r3
+Subject: [PATCH] v6.6-stm32mp-rt-r3
 
 Upstream-Status: Pending [specific to ST boards]
 ---
@@ -273,7 +273,7 @@ index df2e45643..7bb8eb972 100644
  
  static struct syscon *of_syscon_register(struct device_node *np, bool check_res)
 diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 77b17b943..dec6b1050 100644
+index 8d661721c..5df5ec927 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
 @@ -847,7 +847,7 @@ static void stm32_usart_tx_dma_complete(void *arg)
@@ -302,7 +302,7 @@ index 77b17b943..dec6b1050 100644
  
  	pm_runtime_mark_last_busy(port->dev);
  	pm_runtime_put_autosuspend(port->dev);
-@@ -2484,7 +2484,7 @@ static int __maybe_unused stm32_usart_serial_en_wakeup(struct uart_port *port,
+@@ -2480,7 +2480,7 @@ static int __maybe_unused stm32_usart_serial_en_wakeup(struct uart_port *port,
  		}
  
  		/* Poll data from RX FIFO if any */
@@ -311,6 +311,3 @@ index 77b17b943..dec6b1050 100644
  		size = stm32_usart_receive_chars(port, false);
  		if (size)
  			tty_flip_buffer_push(tport);
--- 
-2.43.0
-

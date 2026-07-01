@@ -13,4 +13,3 @@ KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rtp
 KERNEL_CONFIG_FRAGMENTS:append:stm32mp1rt = " ${@bb.utils.contains('MACHINE_FEATURES', 'nosmp', '${WORKDIR}/fragments/features/${LINUX_VERSION}/optional-fragment-06-nosmp.config', '', d)}"
 
 KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('MACHINE_FEATURES', 'rtperf', '${S}/arch/${ARCH}/configs/fragment-10-rt-perf.config', '', d)}"
-
